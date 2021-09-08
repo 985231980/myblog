@@ -29,9 +29,23 @@
         <div style="float: right;margin-right: 20%;width: 10rem" class="hidden-md-and-down">
           <button class="hidden-md-and-down"><span>登 录</span></button>
           <span class="hidden-md-and-down" style="margin-left: 1.5rem">注册</span>
+          <span class="hidden-md-and-down" style="margin-left: 1.5rem">{{ a }}</span>
         </div>
         <div style="float: right;margin-right: 20%">
-          <span class="hidden_menuBar menuBar"><img class="menuBarIcon" src="../assets/iconfont/menuBar.png" /></span>
+        <span class="hidden_menuBar menuBar">
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <img class="menuBarIcon" src="../assets/iconfont/menuBar.png" />
+            </span>
+            <el-dropdown-menu slot="dropdown" class="dropdown_class">
+              <el-dropdown-item icon="el-icon-plus">选项测试</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-plus">选项测试</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-plus-outline">选项测试</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-check">选项测试</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-circle-check">选项测试</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </span>
         </div>
       </div>
     </div>
@@ -43,7 +57,10 @@
 
 <script>
 export default {
-
+  data(){
+    return{
+    }
+  }
 }
 </script>
 
@@ -113,6 +130,11 @@ export default {
   }
   .inner{
     margin-top: 4rem
+  }
+  .dropdown_class{
+    width: 60% !important;
+    border-radius: 0.8rem!important;
+    box-shadow: 0 0 1rem #777777!important;
   }
   @media screen and (min-width: 1200px) {
     .hidden_menuBar {

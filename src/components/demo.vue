@@ -1,7 +1,7 @@
 <template>
   <div>
 <!--    <TopBar></TopBar>-->
-    <div>11234</div>
+    <div>1</div>
   </div>
 </template>
 
