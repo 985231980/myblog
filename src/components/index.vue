@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="font-family: 'Microsoft JhengHei'">
 <!--    顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部顶部-->
     <div>
       <div class="topBar">
@@ -27,7 +27,7 @@
         <span class="hidden-md-and-down">更多</span>
         <span class="space hidden-lg-and-down">.</span>
         <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
-          <button class="hidden-md-and-down"><span>登 录</span></button>
+          <button class="hidden-md-and-down" @click="loginDialog = true"><span>登 录</span></button>
           <span class="hidden-md-and-down" style="margin-left: 1.5rem;">注 册</span>
           <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
         </div>
@@ -46,7 +46,7 @@
             <el-dropdown-menu slot="dropdown" class="dropdown_class">
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
-                <button class="login_button" style="vertical-align: middle;margin-left: 6%;"><span>登 录</span></button>
+                <button class="login_button" style="vertical-align: middle;margin-left: 6%;" @click="openLoginDialog"><span>登 录</span></button>
                  <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;"><span>注 册</span></button>
               </div><hr>
               <div style="margin-left: 8%;">
@@ -85,6 +85,67 @@
         </div>
       </div>
     </div>
+<!--    隐藏登录框-->
+    <div class="jackRadius">
+      <el-dialog
+          class="login_dialog"
+          style="margin-top: 6rem;"
+          center="true"
+          width="90%"
+          :visible.sync="loginDialog">
+        <template slot="title">
+          <div style="color: #606266; font-size: 25px; font-weight: 900">用户登录</div>
+          <div style="color: #909399;">登录后才能发表评论和博客哟</div>
+        </template>
+        <div>
+          <input class="input-round2" placeholder="请输入手机号" v-model="input1" style="margin-left: 10%;">
+        </div>
+        <div>
+          <input class="input-round2" placeholder="请输入密码" v-model="input1" style="margin-left: 10%;">
+        </div>
+        <div style="width: 80%;margin-left: 10%;margin-top: -1rem;margin-bottom: 2.8rem;">
+          <div style="text-align: left;float: left;"><el-button type="text" @click="toOpenRegist">注册账号</el-button></div>
+          <div style="text-align: right;float: right"><el-button type="text" @click="toOpenRegist">忘记密码</el-button></div>
+        </div>
+        <div style="clear: both"></div>
+        <div style="">
+          <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+        </div>
+      </el-dialog>
+    </div>
+<!--    隐藏注册框-->
+    <div class="jackRadius">
+      <el-dialog
+          class="login_dialog"
+          style="margin-top: 6rem;"
+          center="true"
+          width="90%"
+          :visible.sync="registDialog">
+        <template slot="title">
+          <div style="color: #606266; font-size: 25px; font-weight: 900">用户注册</div>
+          <div style="color: #909399;">登录后才能发表评论和博客哟</div>
+        </template>
+        <div>
+          <input class="input-round2" placeholder="请输入手机号" v-model="input1" style="margin-left: 10%;">
+        </div>
+        <div>
+          <input class="input-round3" placeholder="短信验证码" v-model="input1" style="margin-left: 10%;">
+          <input class="input-round3" placeholder="短信验证码" v-model="input1" style="margin-left: 10%;">
+        </div>
+        <div>
+          <input class="input-round2" placeholder="请输入密码" v-model="input1" style="margin-left: 10%;">
+        </div>
+        <div style="width: 80%;margin-left: 10%;margin-top: -1rem;margin-bottom: 2rem;">
+          <div style="text-align: left;float: left">注册账号1</div>
+          <div style="text-align: right;float: right">忘记密码</div>
+        </div>
+        <div style="clear: both"></div>
+        <div style="">
+          <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+        </div>
+      </el-dialog>
+
+    </div>
     <div><router-view></router-view></div>
   </div>
 </template>
@@ -94,7 +155,9 @@ export default {
   data(){
     return{
       menuBarIsOpen:false,
-      searchIsOpen:false
+      searchIsOpen:false,
+      loginDialog:false,
+      registDialog:false
     }
   },
   methods:{
@@ -103,12 +166,30 @@ export default {
     },
     modifySearchIsOpen(){
       this.searchIsOpen = this.searchIsOpen?false:true;
+    },
+    openLoginDialog(){
+      this.menuBarIsOpen = false;
+      this.registDialog = false;
+      this.loginDialog = true;
+      this.$forceUpdate()
+    },
+    toOpenRegist(){
+      this.menuBarIsOpen = false;
+      this.loginDialog = false;
+      this.registDialog = true;
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="less" scoped>
+ .jackRadius{
+   /deep/.el-dialog{
+     border-radius: 20px;
+   }
+ }
+</style>
 <style>
   *{
     margin: 0;
@@ -175,6 +256,29 @@ export default {
   .input-round {
     width: 20%!important;
     border-radius:10rem;
+    padding-left: 2rem;
+    border: 0.1rem solid #777777;
+    line-height: 2.4rem;
+    outline: none;
+    display: inline-block;
+    font-size: 1rem;
+  }
+  .input-round2 {
+    width: 70%!important;
+    margin-left: 10% !important;
+    margin-bottom: 1.6rem;
+    border-radius:1rem;
+    padding-left: 2rem;
+    border: 0.1rem solid #777777;
+    line-height: 2.4rem;
+    outline: none;
+    display: inline-block;
+    font-size: 1rem;
+  }
+  .input-round3 {
+    width: 20%!important;
+    margin-bottom: 1.6rem;
+    border-radius:1rem;
     padding-left: 2rem;
     border: 0.1rem solid #777777;
     line-height: 2.4rem;
@@ -449,6 +553,18 @@ export default {
     }
     .inner{
       margin-top: 3.4rem
+    }
+  }
+  @media screen and (min-width: 600px) {
+    .login_dialog{
+      width: 60%!important;
+      margin-left: 20%!important;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    .login_dialog{
+      width: 40%!important;
+      margin-left: 30%!important;
     }
   }
   @media screen and (max-width: 310px) {
