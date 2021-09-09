@@ -20,7 +20,7 @@
 
               <div4>
                 <img class="avatar" src="../assets/iconfont/user.png">
-                <table1>
+                <table1 name="a">
                   <tr><td>测试作者</td></tr>
                   <tr><td class="timeSize">2021/09/09</td></tr>
                 </table1>

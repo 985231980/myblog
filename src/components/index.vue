@@ -28,7 +28,7 @@
         <span class="space hidden-lg-and-down">.</span>
         <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
           <button class="hidden-md-and-down" @click="loginDialog = true"><span>登 录</span></button>
-          <span class="hidden-md-and-down" style="margin-left: 1.5rem;">注 册</span>
+          <span class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="openLoginDialog">注 册</span>
           <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
         </div>
         <div style="float: right;margin-right: 10%">
@@ -47,7 +47,7 @@
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
                 <button class="login_button" style="vertical-align: middle;margin-left: 6%;" @click="openLoginDialog"><span>登 录</span></button>
-                 <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;"><span>注 册</span></button>
+                 <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="openLoginDialog"><span>注 册</span></button>
               </div><hr>
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/home.png" style="vertical-align: middle;"/>
@@ -123,25 +123,26 @@
           :visible.sync="registDialog">
         <template slot="title">
           <div style="color: #606266; font-size: 25px; font-weight: 900">用户注册</div>
-          <div style="color: #909399;">登录后才能发表评论和博客哟</div>
+          <div style="color: #909399;">海内存知己，天涯若比邻</div>
         </template>
         <div>
           <input class="input-round2" placeholder="请输入手机号" v-model="input1" style="margin-left: 10%;">
         </div>
         <div>
           <input class="input-round3" placeholder="短信验证码" v-model="input1" style="margin-left: 10%;">
-          <input class="input-round3" placeholder="短信验证码" v-model="input1" style="margin-left: 10%;">
+          <button class="input-round4"  style="margin-left: 2%;">获取验证码</button>
+
         </div>
         <div>
           <input class="input-round2" placeholder="请输入密码" v-model="input1" style="margin-left: 10%;">
         </div>
         <div style="width: 80%;margin-left: 10%;margin-top: -1rem;margin-bottom: 2rem;">
-          <div style="text-align: left;float: left">注册账号1</div>
-          <div style="text-align: right;float: right">忘记密码</div>
+          <div style="text-align: left;float: left;"><el-button type="text" @click="openLoginDialog">登录账号</el-button></div>
+          <div style="text-align: right;float: right"><el-button type="text" @click="openLoginDialog">无法注册</el-button></div>
         </div>
         <div style="clear: both"></div>
         <div style="">
-          <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+          <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">注  册</el-button>
         </div>
       </el-dialog>
 
@@ -276,15 +277,24 @@ export default {
     font-size: 1rem;
   }
   .input-round3 {
-    width: 20%!important;
+    width: 36%!important;
     margin-bottom: 1.6rem;
     border-radius:1rem;
     padding-left: 2rem;
     border: 0.1rem solid #777777;
     line-height: 2.4rem;
     outline: none;
-    display: inline-block;
     font-size: 1rem;
+  }
+  .input-round4 {
+    width: 32%!important;
+    margin-bottom: 1.6rem;
+    border: 0px;
+    border-radius:1rem;
+    line-height: 2.4rem;
+    font-size: 1rem;
+    color: #FFFFFF;
+    background: #409eff;
   }
   .inner{
     margin-top: 4.6rem
