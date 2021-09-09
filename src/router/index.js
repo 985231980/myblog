@@ -26,7 +26,7 @@ export default new Router({
                 },{
                     path : '/index',
                     name : '2',
-                    meta:{title: '122'},
+                    meta:{title: '万彻个人站-首页'},
                     component :  basePanel
                 }
             ]

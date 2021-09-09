@@ -5,11 +5,11 @@
       <div class="blog">
         <el-card class="box-card blog_card">
           <div slot="header" class="clearfix">
-            <span>卡片名称</span>
-            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+            <span>博客</span>
+            <span style="float: right; padding: 3px 0">共<span style="color: #E6A23C">1</span>篇</span>
           </div>
-          <div v-for="o in 50" :key="o" class="text item">
-            {{'列表内容 ' + o }}
+          <div>
+
           </div>
         </el-card>
       </div>

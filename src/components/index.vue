@@ -4,7 +4,7 @@
     <div>
       <div class="topBar">
       <span class="logo">
-      <div style="float: left;margin-right: 0.5rem"><img src="../assets/logo.png"></div>
+      <div style="float: left;margin-right: 0.5rem"><img src="../assets/iconfont/logo.png"></div>
       <div style="float: left;line-height: 1.0rem;height: 5rem;vertical-align: middle;">
         <table>
           <tr><td>万彻个人站</td></tr>
@@ -26,10 +26,10 @@
       </span>
         <span class="hidden-md-and-down">更多</span>
         <span class="space hidden-lg-and-down">.</span>
-        <div style="float: right;margin-right: 20%;width: 10rem" class="hidden-md-and-down">
+        <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
           <button class="hidden-md-and-down"><span>登 录</span></button>
-          <span class="hidden-md-and-down" style="margin-left: 1.5rem">注册</span>
-          <span class="hidden-md-and-down" style="margin-left: 1.5rem">.</span>
+          <span class="hidden-md-and-down" style="margin-left: 1.5rem;">注 册</span>
+          <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
         </div>
         <div style="float: right;margin-right: 10%">
         <span class="hidden_menuBar menuBar2">
@@ -267,7 +267,7 @@ export default {
   }
   @media screen and (max-width: 800px) {
     .logo img{
-      width: 2rem;
+      width: 2.8rem;
       vertical-align: middle;
       text-align: center;
     }
@@ -337,7 +337,7 @@ export default {
   }
   @media screen and (max-width: 600px) {
     .logo img{
-      width: 1.6rem;
+      width: 2.6rem;
       vertical-align: middle;
       text-align: center;
     }
