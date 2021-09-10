@@ -6,29 +6,24 @@
         <el-card class="box-card blog_card">
           <div slot="header" class="clearfix">
             <span style="font-weight: 900">博客</span>
-            <span style="float: right; padding: 3px 0">共<span style="color: #E6A23C">1</span>篇</span>
+            <span style="float: right; padding: 3px 0">共<span style="color: #E6A23C">{{blogsData.length}}</span>篇</span>
           </div>
           <div>
-            <div class="blog_layout" v-for="o in 4" :key="o">
-              <div3><img src="../assets/test/test1.jpg"></div3>
-              <div1>土耳其小孩提前剪彩被总统敲头</div1>
-              <div2>
-                9月4日，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩带。
-                埃尔多安开玩笑地用指关节敲了敲小男孩的头，提醒他提前剪断了彩带。9月4日
-                ，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩
-              </div2>
-
+            <div class="blog_layout" v-for="blogItem in blogsData" :key="blogItem">
+              <div3><img :src="blogItem.blogMainImg"></div3>
+              <div1>{{blogItem.blogTitle}}</div1>
+              <div2>{{blogItem.blogContent}}</div2>
               <div4>
                 <img class="avatar" src="../assets/iconfont/user.png">
-                <table1 name="a">
-                  <tr><td>测试作者</td></tr>
-                  <tr><td class="timeSize">2021/09/09</td></tr>
-                </table1>
+                <table>
+                  <tr><td>{{blogItem.blogAuthorName}}</td></tr>
+                  <tr><td class="timeSize">{{blogItem.blogCreateDatetime}}</td></tr>
+                </table>
                 <div><table><tr>
                       <td><img src="../assets/iconfont/look.png" style="width: 1.4rem"></td>
-                      <td>123</td>
+                      <td>{{blogItem.blogLookNum}}</td>
                       <td><img src="../assets/iconfont/like.png" class="layoutImg" style="width: 1.2rem"></td>
-                      <td class="layoutImgText">23</td>
+                      <td class="layoutImgText">{{blogItem.blogLikeNum}}</td>
                     </tr></table></div>
               </div4>
               <div style="clear: both"></div><hr>
@@ -62,8 +57,48 @@
 export default {
   data(){
     return{
-      area:{
-      }
+      blogsData:[
+        {
+          blogId:1,
+          blogTitle:'土耳其小孩提前剪彩被总统敲头',
+          blogContent:'9月4日，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩带。\n' +
+              '                埃尔多安开玩笑地用指关节敲了敲小男孩的头，提醒他提前剪断了彩带。9月4日\n' +
+              '                ，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩',
+          blogAuthorId:1,
+          blogAuthorName:'张三',
+          blogCreateDatetime:'2021/09/10',
+          blogLookNum:23,
+          blogLikeNum:16,
+          blogCommentNum:0,
+          blogMainImg:'http://img3m3.ddimg.cn/40/31/25316023-1_b_5.jpg',
+        },{
+          blogId:1,
+          blogTitle:'土耳其小孩提前剪彩被总统敲头',
+          blogContent:'9月4日，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩带。\n' +
+              '                埃尔多安开玩笑地用指关节敲了敲小男孩的头，提醒他提前剪断了彩带。9月4日\n' +
+              '                ，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩',
+          blogAuthorId:1,
+          blogAuthorName:'张三',
+          blogCreateDatetime:'2021/09/10',
+          blogLookNum:23,
+          blogLikeNum:16,
+          blogCommentNum:0,
+          blogMainImg:'http://img3m3.ddimg.cn/40/31/25316023-1_b_5.jpg',
+        },{
+          blogId:1,
+          blogTitle:'土耳其小孩提前剪彩被总统敲头',
+          blogContent:'9月4日，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩带。\n' +
+              '                埃尔多安开玩笑地用指关节敲了敲小男孩的头，提醒他提前剪断了彩带。9月4日\n' +
+              '                ，土耳其总统埃尔多安参加活动的剪彩仪式时被一个小男孩抢先一步剪断了彩',
+          blogAuthorId:1,
+          blogAuthorName:'张三',
+          blogCreateDatetime:'2021/09/10',
+          blogLookNum:23,
+          blogLikeNum:16,
+          blogCommentNum:0,
+          blogMainImg:'http://img3m3.ddimg.cn/40/31/25316023-1_b_5.jpg',
+        }
+      ],
     }
   }
 }

@@ -27,8 +27,9 @@
         <span class="hidden-md-and-down">更多</span>
         <span class="space hidden-lg-and-down">.</span>
         <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
-          <button class="hidden-md-and-down" @click="loginDialog = true"><span>登 录</span></button>
-          <span class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="openLoginDialog">注 册</span>
+          <button v-if="isTokenHave" class="hidden-md-and-down" @click="openLoginDialog"><span>登 录</span></button>
+          <span v-if="isTokenHave" class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="toOpenRegist">注 册</span>
+          <span class="hidden-md-and-down" v-if="!isTokenHave" style="">{{$store.state.userData.name}}<button @click="toLogOut">退出登录</button></span>
           <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
         </div>
         <div style="float: right;margin-right: 10%">
@@ -47,7 +48,7 @@
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
                 <button class="login_button" style="vertical-align: middle;margin-left: 6%;" @click="openLoginDialog"><span>登 录</span></button>
-                 <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="openLoginDialog"><span>注 册</span></button>
+                 <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="toOpenRegist"><span>注 册</span></button>
               </div><hr>
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/home.png" style="vertical-align: middle;"/>
@@ -92,16 +93,17 @@
           style="margin-top: 6rem;"
           center="true"
           width="90%"
+          v-model="loginForm"
           :visible.sync="loginDialog">
         <template slot="title">
           <div style="color: #606266; font-size: 25px; font-weight: 900">用户登录</div>
           <div style="color: #909399;">登录后才能发表评论和博客哟</div>
         </template>
         <div>
-          <input class="input-round2" placeholder="请输入手机号" v-model="input1" style="margin-left: 10%;">
+          <input class="input-round2" placeholder="请输入手机号" v-model="loginForm.phoneNum" style="margin-left: 10%;">
         </div>
         <div>
-          <input class="input-round2" placeholder="请输入密码" v-model="input1" style="margin-left: 10%;">
+          <input class="input-round2" placeholder="请输入密码" v-model="loginForm.password" style="margin-left: 10%;">
         </div>
         <div style="width: 80%;margin-left: 10%;margin-top: -1rem;margin-bottom: 2.8rem;">
           <div style="text-align: left;float: left;"><el-button type="text" @click="toOpenRegist">注册账号</el-button></div>
@@ -109,7 +111,7 @@
         </div>
         <div style="clear: both"></div>
         <div style="">
-          <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+          <el-button type="primary" @click="toSubmitLogin" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
         </div>
       </el-dialog>
     </div>
@@ -120,21 +122,22 @@
           style="margin-top: 6rem;"
           center="true"
           width="90%"
+          v-model="registerForm"
           :visible.sync="registDialog">
         <template slot="title">
           <div style="color: #606266; font-size: 25px; font-weight: 900">用户注册</div>
           <div style="color: #909399;">海内存知己，天涯若比邻</div>
         </template>
         <div>
-          <input class="input-round2" placeholder="请输入手机号" v-model="input1" style="margin-left: 10%;">
+          <input class="input-round2" placeholder="请输入手机号" v-model="registerForm.phoneNum" style="margin-left: 10%;">
         </div>
         <div>
-          <input class="input-round3" placeholder="短信验证码" v-model="input1" style="margin-left: 10%;">
-          <button class="input-round4"  style="margin-left: 2%;">获取验证码</button>
-
+          <input class="input-round3" placeholder="验证码" v-model="registerForm.checkCode" style="margin-left: 10%;">
+          <button class="input-round4" @click="toGetPhoneCode" v-if="canGetPhoneCode" style="margin-left: 2%;">获取</button>
+          <button class="input-round4" v-else style="margin-left: 2%;background: #909399;cursor:no-drop">成功({{second}})</button>
         </div>
         <div>
-          <input class="input-round2" placeholder="请输入密码" v-model="input1" style="margin-left: 10%;">
+          <input class="input-round2" placeholder="请设置密码(6-18位)" v-model="registerForm.password" style="margin-left: 10%;">
         </div>
         <div style="width: 80%;margin-left: 10%;margin-top: -1rem;margin-bottom: 2rem;">
           <div style="text-align: left;float: left;"><el-button type="text" @click="openLoginDialog">登录账号</el-button></div>
@@ -145,23 +148,56 @@
           <el-button type="primary" style="border-radius: 10rem;width: 60%;margin-left: 20%;">注  册</el-button>
         </div>
       </el-dialog>
-
     </div>
     <div><router-view></router-view></div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 export default {
   data(){
     return{
       menuBarIsOpen:false,
       searchIsOpen:false,
       loginDialog:false,
-      registDialog:false
+      registDialog:false,
+      //获取验证码↓↓↓↓↓↓
+      canGetPhoneCode:true,
+      second: 60,
+      timer: null,
+      //获取验证码↑↑↑↑↑↑
+      isTokenHave:localStorage.getItem('Authorization')==null||localStorage.getItem('Authorization')==''?true:false,
+      registerForm:{
+        phoneNum:null,
+        password:null,
+        checkCode:null
+      },
+      loginForm:{
+        phoneNum:null,
+        password:null,
+      },
     }
   },
+  created() {
+    if (this.$store.state.temp.isLoginPage){
+      this.$message({
+        type:'success', message:'登录成功！', showClose:false, offset:80, center:true
+      });
+      this.$store.state.temp.isLoginPage = false;
+    }
+    if (this.$store.state.temp.isLogoutPage){
+      this.$message({
+        type:'success', message:'登出成功！', showClose:false, offset:80, center:true
+      });
+      this.$store.state.temp.isLogoutPage = false;
+    }
+  },
+  mounted() {
+    this.judgeCode();
+  },
   methods:{
+    ...mapMutations(['changeLogin']),
     modifyIcon(menuBarIsOpen){
       this.menuBarIsOpen = menuBarIsOpen;
     },
@@ -178,7 +214,103 @@ export default {
       this.menuBarIsOpen = false;
       this.loginDialog = false;
       this.registDialog = true;
-    }
+    },
+    toSubmitLogin(){
+      if (this.loginForm.phoneNum==null||this.loginForm.phoneNum==''||
+          this.loginForm.password==null||this.loginForm.password==''){
+        this.$message({
+          type:'warning', message:'请将表单填写完整', showClose:false, offset:80, center:true
+        });
+        return false;
+      }else{
+        //执行登录
+        var userData = {name:'zhangsan', Authorization: 'this_is_token_123456' }
+        this.changeLogin(userData);
+        //存了单独的token和用户信息（含token），刷新页面
+        this.$store.state.temp.isLoginPage = true;
+        this.$router.go(0)
+      }
+    },
+    toLogOut(){
+      localStorage.clear();
+      this.$store.state.temp.isLogoutPage = true;
+      this.$router.go(0)
+    },
+    //获取验证码重要js----------------------↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    toGetPhoneCode(){
+      let that = this;
+      if (that.canGetPhoneCode) {
+        //操作发送验证码
+        //初步验证电话号码合法性
+        if ((/^[1][3,4,5,7,8,9][0-9]{9}$/).test(this.registerForm.phoneNum)){
+          if (this.canGetPhoneCode){
+            that.$message({
+              type:'success', message:'发送成功，5分钟内有效！', showClose:false, offset:80, center:true
+            });
+          }else{
+            that.$message({
+              type:'warning', message:'该手机号码已达次数上限', showClose:false, offset:80, center:true
+            });
+            return false;
+          }
+        }else{
+          that.$message({
+            type:'warning', message:'请输入正确的手机号！', showClose:false, offset:80, center:true
+          });
+          return false;
+        }
+        //成功再继续执行，否则return
+        that.canGetPhoneCode = false;
+        let interval = window.setInterval(function() {
+          that.setStorage(that.second);
+          if (that.second-- <= 0) {
+            that.second = 60;
+            that.canGetPhoneCode = true;
+            window.clearInterval(interval);
+          }
+        }, 1000);
+      }
+    },
+    setStorage(parm) {
+      localStorage.setItem("dalay", parm);
+      localStorage.setItem("_time", new Date().getTime());
+    },
+    getStorage() {
+      let localDelay = {};
+      localDelay.delay = localStorage.getItem("dalay");
+      localDelay.sec = localStorage.getItem("_time");
+      return localDelay;
+    },
+    judgeCode() {
+      let that = this;
+      let localDelay = that.getStorage();
+      let secTime = parseInt(
+          (new Date().getTime() - localDelay.sec) / 1000
+      );
+      console.log(localDelay);
+      if (secTime > localDelay.delay) {
+        that.canGetPhoneCode = true;
+        console.log("已过期");
+      } else {
+        that.canGetPhoneCode = false;
+        let _delay = localDelay.delay - secTime;
+        that.second = _delay;
+        that.timer = setInterval(function() {
+          if (_delay > 1) {
+            _delay--;
+            that.setStorage(_delay);
+            that.second = _delay;
+            that.canGetPhoneCode = false;
+          } else {
+            // 此处赋值时为了让浏览器打开的时候,直接就显示剩余的时间
+            that.canGetPhoneCode = true;
+            window.clearInterval(that.timer);
+
+          }
+        }, 1000);
+      }
+    },
+    //获取验证码重要js----------------------↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
   }
 }
 </script>
@@ -188,6 +320,11 @@ export default {
  .jackRadius{
    /deep/.el-dialog{
      border-radius: 20px;
+   }
+ }
+ @media screen and (max-width: 400px){
+   /deep/.el-message--success {
+     border-radius: 20px!important;
    }
  }
 </style>
@@ -277,7 +414,7 @@ export default {
     font-size: 1rem;
   }
   .input-round3 {
-    width: 36%!important;
+    width: 34%!important;
     margin-bottom: 1.6rem;
     border-radius:1rem;
     padding-left: 2rem;
@@ -287,7 +424,7 @@ export default {
     font-size: 1rem;
   }
   .input-round4 {
-    width: 32%!important;
+    width: 34%!important;
     margin-bottom: 1.6rem;
     border: 0px;
     border-radius:1rem;
