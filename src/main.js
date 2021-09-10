@@ -5,9 +5,15 @@ import Element from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import 'element-ui/lib/theme-chalk/display.css';//断点消失
 
+var axios = require('axios')
+axios.defaults.baseURL = 'http://localhost:8001'
+// axios.defaults.baseURL = 'http://39.104.207.113:8443'
+
+
 Vue.use(Element)
 
 Vue.config.productionTip = false
+Vue.prototype.$axios = axios
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {

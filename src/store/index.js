@@ -14,10 +14,8 @@ const index = new Vuex.Store({
     state:sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')):{
         Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
         userData:null,
-        temp:{
-            isLoginPage:false,
-            isLogoutPage:false,
-        },
+        temp_isLoginPage:0,
+        temp_isLogoutPage:0,
     },
     mutations: {
         // 修改token，并将token存入localStorage

@@ -27,9 +27,9 @@
         <span class="hidden-md-and-down">更多</span>
         <span class="space hidden-lg-and-down">.</span>
         <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
-          <button v-if="isTokenHave" class="hidden-md-and-down" @click="openLoginDialog"><span>登 录</span></button>
-          <span v-if="isTokenHave" class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="toOpenRegist">注 册</span>
-          <span class="hidden-md-and-down" v-if="!isTokenHave" style="">{{$store.state.userData.name}}<button @click="toLogOut">退出登录</button></span>
+          <button v-if="!isTokenHave" class="hidden-md-and-down" @click="openLoginDialog"><span>登 录</span></button>
+          <span v-if="!isTokenHave" class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="toOpenRegist">注 册</span>
+          <span class="hidden-md-and-down" v-if="isTokenHave" style="">{{$store.state.userData.name}}<button @click="toLogOut">退出登录</button></span>
           <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
         </div>
         <div style="float: right;margin-right: 10%">
@@ -46,9 +46,11 @@
 <!--            下拉菜单-->
             <el-dropdown-menu slot="dropdown" class="dropdown_class">
               <div style="margin-left: 8%;">
-                <img class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
-                <button class="login_button" style="vertical-align: middle;margin-left: 6%;" @click="openLoginDialog"><span>登 录</span></button>
-                 <button class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="toOpenRegist"><span>注 册</span></button>
+                <img v-if="!isTokenHave" class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
+                <img v-if="isTokenHave" class="menuBarIconA" src="../assets/iconfont/user.png" style="vertical-align: middle;"/>
+                <button v-if="!isTokenHave" class="login_button" style="vertical-align: middle;margin-left: 6%;" @click="openLoginDialog"><span>登 录</span></button>
+                 <button v-if="!isTokenHave" class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="toOpenRegist"><span>注 册</span></button>
+                <span v-if="isTokenHave" class="menuBarText">zhangsan</span>
               </div><hr>
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/home.png" style="vertical-align: middle;"/>
@@ -111,7 +113,10 @@
         </div>
         <div style="clear: both"></div>
         <div style="">
-          <el-button type="primary" @click="toSubmitLogin" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+          <el-button v-if="!isLoginLoading" type="primary" @click="toSubmitLogin" style="border-radius: 10rem;width: 60%;margin-left: 20%;">登  录</el-button>
+          <el-button v-else type="primary" disabled @click="toSubmitLogin" style="border-radius: 10rem;width: 60%;margin-left: 20%;">
+            登陆中&nbsp;<i class="el-icon-loading"></i>
+          </el-button>
         </div>
       </el-dialog>
     </div>
@@ -134,7 +139,7 @@
         <div>
           <input class="input-round3" placeholder="验证码" v-model="registerForm.checkCode" style="margin-left: 10%;">
           <button class="input-round4" @click="toGetPhoneCode" v-if="canGetPhoneCode" style="margin-left: 2%;">获取</button>
-          <button class="input-round4" v-else style="margin-left: 2%;background: #909399;cursor:no-drop">成功({{second}})</button>
+          <button class="input-round4" v-else style="margin-left: 2%;background: #909399;cursor:no-drop">获取({{second}})</button>
         </div>
         <div>
           <input class="input-round2" placeholder="请设置密码(6-18位)" v-model="registerForm.password" style="margin-left: 10%;">
@@ -167,7 +172,7 @@ export default {
       second: 60,
       timer: null,
       //获取验证码↑↑↑↑↑↑
-      isTokenHave:localStorage.getItem('Authorization')==null||localStorage.getItem('Authorization')==''?true:false,
+      isTokenHave:localStorage.getItem('Authorization')==null||localStorage.getItem('Authorization')==''?false:true,
       registerForm:{
         phoneNum:null,
         password:null,
@@ -177,20 +182,21 @@ export default {
         phoneNum:null,
         password:null,
       },
+      isLoginLoading:false
     }
   },
   created() {
-    if (this.$store.state.temp.isLoginPage){
+    if (this.$store.state.temp_isLoginPage > 0){
       this.$message({
         type:'success', message:'登录成功！', showClose:false, offset:80, center:true
       });
-      this.$store.state.temp.isLoginPage = false;
+      this.$store.state.temp_isLoginPage = 0;
     }
-    if (this.$store.state.temp.isLogoutPage){
+    if (this.$store.state.temp_isLogoutPage > 0){
       this.$message({
         type:'success', message:'登出成功！', showClose:false, offset:80, center:true
       });
-      this.$store.state.temp.isLogoutPage = false;
+      this.$store.state.temp_isLogoutPage = 0;
     }
   },
   mounted() {
@@ -224,16 +230,35 @@ export default {
         return false;
       }else{
         //执行登录
-        var userData = {name:'zhangsan', Authorization: 'this_is_token_123456' }
-        this.changeLogin(userData);
-        //存了单独的token和用户信息（含token），刷新页面
-        this.$store.state.temp.isLoginPage = true;
-        this.$router.go(0)
+        this.isLoginLoading = true;
+        this.$axios.post('/user/login',{
+          form:this.loginForm
+        })
+        .then((res)=>{
+          if (res.data.code == 200){
+            //登录成功
+            var userData = {name:'zhangsan', Authorization: 'this_is_token_123456' }
+            this.changeLogin(userData);
+            this.$store.state.temp_isLoginPage += 1;
+            this.$router.go(0)
+          }else{
+            //用户名或密码错误
+            this.$message({
+              type:'warning', message:'用户名或密码错误！', showClose:false, offset:80, center:true
+            });
+          }
+          this.isLoginLoading = false;
+        })
+        .catch((error)=>{
+          this.isLoginLoading = false;
+          this.$message({offset:80,message:"网络错误，无法访问！"});
+          console.log("login_error"+error)
+        })
       }
     },
     toLogOut(){
       localStorage.clear();
-      this.$store.state.temp.isLogoutPage = true;
+      this.$store.state.temp_isLogoutPage += 1;
       this.$router.go(0)
     },
     //获取验证码重要js----------------------↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
