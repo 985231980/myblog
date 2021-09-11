@@ -26,11 +26,24 @@
       </span>
         <span class="hidden-md-and-down">更多</span>
         <span class="space hidden-lg-and-down">.</span>
-        <div style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
-          <button v-if="!isTokenHave" class="hidden-md-and-down" @click="openLoginDialog"><span>登 录</span></button>
-          <span v-if="!isTokenHave" class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="toOpenRegist">注 册</span>
-          <span class="hidden-md-and-down" v-if="isTokenHave" style="">{{$store.state.userData.name}}<button @click="toLogOut">退出登录</button></span>
+        <div v-if="!isTokenHave" style="float: right;margin-right: 18%;width: 12rem" class="hidden-md-and-down">
+          <button class="hidden-md-and-down" @click="openLoginDialog"><span>登 录</span></button>
+          <span class="hidden-md-and-down" style="margin-left: 1.5rem;" @click="toOpenRegist">注 册</span>
           <span class="space hidden-md-and-down" style="margin-left: 1.5rem">.</span>
+        </div>
+        <div v-if="isTokenHave" style="float: right;margin-right: 12%;width: 20rem;" class="hidden-md-and-down">
+          <img v-if="isTokenHave" src="../assets/iconfont/user.png" style="vertical-align: middle;width: 3.4rem"/>
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <span style="font-size: 1.4rem">{{$store.state.userData.name}}</span>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="dropdown_class" style="width: 10rem!important;padding: 0.4rem 0rem 0.4rem 0rem!important;text-align: center">
+              <div style="user-select: none;cursor: pointer;width: 8rem;" @click="toLogOut">
+                <img src="../assets/iconfont/logout.png" style="vertical-align: middle;width: 2rem"/>
+                <span class="menuBarText" style="color: #F56C6C!important;font-size: 1rem!important;">退出登录</span>
+              </div>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
         <div style="float: right;margin-right: 10%">
         <span class="hidden_menuBar menuBar2">
@@ -52,15 +65,15 @@
                  <button v-if="!isTokenHave" class="login_button" style="vertical-align: middle;margin-left: 4%;background: #777777!important;" @click="toOpenRegist"><span>注 册</span></button>
                 <span v-if="isTokenHave" class="menuBarText">zhangsan</span>
               </div><hr>
-              <div style="margin-left: 8%;">
+              <div v-if="isTokenHave" style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/home.png" style="vertical-align: middle;"/>
                 <span class="menuBarText">个人中心</span>
-              </div><hr>
-              <div style="margin-left: 8%;">
+              </div><span v-if="isTokenHave"><hr></span>
+              <div v-if="isTokenHave" style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/star.png" style="vertical-align: middle;"/>
                 <span class="menuBarText">只看关注</span>
-              </div><hr>
-              <div style="margin-left: 8%;">
+              </div><span v-if="isTokenHave"><hr></span>
+              <div style="margin-left: 8%;" @click="$router.go(0)">
                 <img class="menuBarIconA" src="../assets/iconfont/refresh.png" style="vertical-align: middle;"/>
                 <span class="menuBarText">刷新列表</span>
               </div><hr>
@@ -71,6 +84,10 @@
               <div style="margin-left: 8%;">
                 <img class="menuBarIconA" src="../assets/iconfont/info.png" style="vertical-align: middle;"/>
                 <span class="menuBarText">关于站长</span>
+              </div><span v-if="isTokenHave"><hr></span>
+              <div v-if="isTokenHave" style="margin-left: 8%;" @click="toLogOut">
+                <img class="menuBarIconA" src="../assets/iconfont/logout.png" style="vertical-align: middle;"/>
+                <span class="menuBarText" style="color: #F56C6C!important;">退出登录</span>
               </div>
             </el-dropdown-menu>
           </el-dropdown>
@@ -250,8 +267,13 @@ export default {
           this.isLoginLoading = false;
         })
         .catch((error)=>{
+          var userData = {name:'zhangsan', Authorization: 'this_is_token_123456' }
+          this.changeLogin(userData);
+          this.$store.state.temp_isLoginPage += 1;
           this.isLoginLoading = false;
-          this.$message({offset:80,message:"网络错误，无法访问！"});
+          this.$router.go(0)
+          // this.isLoginLoading = false;
+          // this.$message({offset:80,message:"网络错误，无法访问！"});
           console.log("login_error"+error)
         })
       }
@@ -270,7 +292,8 @@ export default {
         if ((/^[1][3,4,5,7,8,9][0-9]{9}$/).test(this.registerForm.phoneNum)){
           if (this.canGetPhoneCode){
             that.$message({
-              type:'success', message:'发送成功，5分钟内有效！', showClose:false, offset:80, center:true
+              // type:'success', message:'发送成功，5分钟内有效！', showClose:false, offset:80, center:true
+              type:'success', message:'获取成功', showClose:false, offset:80, center:true
             });
           }else{
             that.$message({
@@ -462,6 +485,8 @@ export default {
     margin-top: 4.6rem
   }
   .dropdown_class{
+    cursor: pointer;
+    user-select: none;
     padding: 3%!important;
     width: 60% !important;
     border-radius: 0.8rem!important;

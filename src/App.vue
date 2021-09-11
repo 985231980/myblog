@@ -5,6 +5,7 @@
 </template>
 <script>
 import store from "@/store/index";
+import 'font-awesome/css/font-awesome.min.css';
 export default {
   //定义store
   store,
